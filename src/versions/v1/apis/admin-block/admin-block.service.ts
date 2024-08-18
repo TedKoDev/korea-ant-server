@@ -15,7 +15,7 @@ export class AdminBlockService {
     const { blockedUserId, reason } = createAdminBlockDto;
 
     // 현재 차단 상태인지 확인
-    const existingBlock = await this.prisma.adminBlock.findFirst({
+    const existingBlock = await this.prisma.admin_block.findFirst({
       where: {
         admin_id: adminId,
         blocked_user_id: blockedUserId,
@@ -28,7 +28,7 @@ export class AdminBlockService {
     }
 
     // If the user was previously unblocked, update the record
-    const previousBlock = await this.prisma.adminBlock.findFirst({
+    const previousBlock = await this.prisma.admin_block.findFirst({
       where: {
         admin_id: adminId,
         blocked_user_id: blockedUserId,
@@ -37,7 +37,7 @@ export class AdminBlockService {
     });
 
     if (previousBlock) {
-      return this.prisma.adminBlock.update({
+      return this.prisma.admin_block.update({
         where: { admin_block_id: previousBlock.admin_block_id },
         data: {
           unblocked_at: null, // Reset unblocked_at
@@ -47,7 +47,7 @@ export class AdminBlockService {
     }
 
     // Create a new block record if no previous block found
-    return this.prisma.adminBlock.create({
+    return this.prisma.admin_block.create({
       data: {
         admin: {
           connect: {
@@ -75,7 +75,7 @@ export class AdminBlockService {
     console.log('adminId', adminId);
 
     // 현재 차단 상태인지 확인
-    const block = await this.prisma.adminBlock.findFirst({
+    const block = await this.prisma.admin_block.findFirst({
       where: {
         admin_id: adminId,
         blocked_user_id: blockedUserId,
@@ -88,7 +88,7 @@ export class AdminBlockService {
     }
 
     // 차단 삭제 및 unlocked_at 날짜 기록
-    await this.prisma.adminBlock.update({
+    await this.prisma.admin_block.update({
       where: { admin_block_id: block.admin_block_id },
       data: {
         unblocked_at: new Date(),
@@ -103,7 +103,7 @@ export class AdminBlockService {
     const skip = (page - 1) * limit;
 
     // where 절 정의
-    const whereClause: Prisma.adminBlockWhereInput = {
+    const whereClause: Prisma.admin_blockWhereInput = {
       admin_id: adminId,
       blocked_user: {
         username: {
@@ -118,7 +118,7 @@ export class AdminBlockService {
     console.log('whereClause', whereClause);
 
     const [blockedUsers, totalCount] = await Promise.all([
-      this.prisma.adminBlock.findMany({
+      this.prisma.admin_block.findMany({
         skip,
         take: limit,
         where: whereClause,
@@ -132,7 +132,7 @@ export class AdminBlockService {
           },
         },
       }),
-      this.prisma.adminBlock.count({
+      this.prisma.admin_block.count({
         where: whereClause,
       }),
     ]);

@@ -71,7 +71,7 @@ export class CommentsService {
               profile_picture_url: true,
             },
           },
-          childComments: {
+          child_comments: {
             where: { deleted_at: null },
             take: 3,
             orderBy: { created_at: 'desc' },
@@ -114,7 +114,7 @@ export class CommentsService {
             profile_picture_url: true,
           },
         },
-        childComments: {
+        child_comments: {
           where: { deleted_at: null },
           take: 3,
           orderBy: { created_at: 'desc' },

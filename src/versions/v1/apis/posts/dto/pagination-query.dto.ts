@@ -1,6 +1,6 @@
 // src/posts/dto/pagination-query.dto.ts
 
-import { postType } from '@prisma/client';
+import { post_type } from '@prisma/client';
 import { IsEnum, IsInt, IsOptional } from 'class-validator';
 
 export class PaginationQueryDto {
@@ -12,9 +12,9 @@ export class PaginationQueryDto {
   @IsOptional()
   limit?: number;
 
-  @IsEnum(postType)
+  @IsEnum(post_type)
   @IsOptional()
-  type?: postType;
+  type?: post_type;
 
   @IsOptional()
   sort?: 'latest' | 'oldest' | 'popular';

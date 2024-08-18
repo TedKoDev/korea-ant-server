@@ -123,16 +123,16 @@ export class AuthService {
     const expiredAt = dayjs().add(1, 'minute').toDate();
 
     // 기존에 AuthCode가 있으면 삭제
-    const existingAuthCode = await this.prisma.authCode.findUnique({
+    const existingAuthCode = await this.prisma.auth_code.findUnique({
       where: { user_id: user.user_id },
     });
 
     if (existingAuthCode) {
-      await this.prisma.authCode.delete({ where: { user_id: user.user_id } });
+      await this.prisma.auth_code.delete({ where: { user_id: user.user_id } });
     }
 
     // 새로운 AuthCode 생성
-    const { code, koreaant_code } = await this.prisma.authCode.create({
+    const { code, koreaant_code } = await this.prisma.auth_code.create({
       data: {
         user_id: user.user_id,
         expired_at: expiredAt,
@@ -210,7 +210,9 @@ export class AuthService {
 
   // 카페 24 인증 토큰 발급
   async getToken(code: string) {
-    const codeInfo = await this.prisma.authCode.findUnique({ where: { code } });
+    const codeInfo = await this.prisma.auth_code.findUnique({
+      where: { code },
+    });
 
     if (!codeInfo) {
       throw new Error('Invalid authorization code');
@@ -228,7 +230,7 @@ export class AuthService {
 
   // 커작 인증 토큰 발급
   async getkoreaantToken(koreaantCode: string) {
-    const codeInfo = await this.prisma.authCode.findUnique({
+    const codeInfo = await this.prisma.auth_code.findUnique({
       where: { koreaant_code: koreaantCode },
     });
 

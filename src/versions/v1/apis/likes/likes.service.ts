@@ -45,13 +45,13 @@ export class LikesService {
   }
 
   async toggleCommentLike(userId: number, commentId: number) {
-    const existingLike = await this.prisma.commentLike.findFirst({
+    const existingLike = await this.prisma.comment_like.findFirst({
       where: { user_id: userId, comment_id: commentId },
     });
 
     if (existingLike) {
       if (existingLike.deleted_at) {
-        await this.prisma.commentLike.update({
+        await this.prisma.comment_like.update({
           where: { comment_like_id: existingLike.comment_like_id },
           data: { deleted_at: null },
         });
@@ -60,7 +60,7 @@ export class LikesService {
           data: { likes: { increment: 1 } },
         });
       } else {
-        await this.prisma.commentLike.update({
+        await this.prisma.comment_like.update({
           where: { comment_like_id: existingLike.comment_like_id },
           data: { deleted_at: new Date() },
         });
@@ -70,7 +70,7 @@ export class LikesService {
         });
       }
     } else {
-      await this.prisma.commentLike.create({
+      await this.prisma.comment_like.create({
         data: {
           user_id: userId,
           comment_id: commentId,

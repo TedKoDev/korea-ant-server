@@ -14,7 +14,7 @@ export class UserBlockService {
     const { blockedUserId } = createUserBlockDto;
 
     // 이미 차단된 상태인지 확인
-    const existingBlock = await this.prisma.userBlock.findFirst({
+    const existingBlock = await this.prisma.user_block.findFirst({
       where: {
         blocker_id: blockerId,
         blocked_id: blockedUserId,
@@ -26,7 +26,7 @@ export class UserBlockService {
     }
 
     // 새 차단 생성
-    return this.prisma.userBlock.create({
+    return this.prisma.user_block.create({
       data: {
         blocker_id: blockerId,
         blocked_id: blockedUserId,
@@ -39,7 +39,7 @@ export class UserBlockService {
     const { blockedUserId } = unblockUserDto;
 
     // 현재 차단 상태인지 확인
-    const block = await this.prisma.userBlock.findFirst({
+    const block = await this.prisma.user_block.findFirst({
       where: {
         blocker_id: blockerId,
         blocked_id: blockedUserId,
@@ -51,7 +51,7 @@ export class UserBlockService {
     }
 
     // 차단 삭제
-    await this.prisma.userBlock.delete({
+    await this.prisma.user_block.delete({
       where: { block_id: block.block_id },
     });
   }
@@ -65,7 +65,7 @@ export class UserBlockService {
     const skip = (page - 1) * limit;
 
     // where 절 정의
-    const whereClause: Prisma.userBlockWhereInput = {
+    const whereClause: Prisma.user_blockWhereInput = {
       blocker_id: blockerId,
       blocked: {
         username: {
@@ -76,7 +76,7 @@ export class UserBlockService {
     };
 
     const [blockedUsers, totalCount] = await Promise.all([
-      this.prisma.userBlock.findMany({
+      this.prisma.user_block.findMany({
         skip,
         take: limit,
         where: whereClause,
@@ -90,7 +90,7 @@ export class UserBlockService {
           },
         },
       }),
-      this.prisma.userBlock.count({
+      this.prisma.user_block.count({
         where: whereClause,
       }),
     ]);

@@ -1,9 +1,9 @@
-import { reportTargetType } from '@prisma/client';
+import { report_target_type } from '@prisma/client';
 import { IsEnum, IsInt, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateReportDto {
-  @IsEnum(reportTargetType)
-  target_type: reportTargetType;
+  @IsEnum(report_target_type)
+  target_type: report_target_type;
 
   @IsInt()
   target_id: number;

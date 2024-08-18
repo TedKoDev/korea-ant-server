@@ -57,7 +57,7 @@ export class SearchService {
 
     // 게시글(태그)
     const postTagWhere: Prisma.postWhereInput = {
-      postTag: {
+      post_tag: {
         some: {
           tag: { tag_name: { contains: query, mode: 'insensitive' } },
         },
@@ -81,7 +81,7 @@ export class SearchService {
             media: true,
             user: true,
             category: true,
-            postTag: { include: { tag: true } },
+            post_tag: { include: { tag: true } },
           },
         })
         .then((posts) => posts.map((post) => this.integratePostContent(post))),
@@ -96,7 +96,7 @@ export class SearchService {
             media: true,
             user: true,
             category: true,
-            postTag: { include: { tag: true } },
+            post_tag: { include: { tag: true } },
           },
         })
         .then((posts) => posts.map((post) => this.integratePostContent(post))),
@@ -119,7 +119,7 @@ export class SearchService {
     const skip = (page - 1) * limit;
 
     const where: Prisma.postWhereInput = {
-      postTag: {
+      post_tag: {
         some: {
           tag: { tag_name: { contains: query, mode: 'insensitive' } },
         },
@@ -139,7 +139,7 @@ export class SearchService {
             media: true,
             user: true,
             category: true,
-            postTag: { include: { tag: true } },
+            post_tag: { include: { tag: true } },
           },
         })
         .then((posts) => posts.map((post) => this.integratePostContent(post))),
@@ -196,7 +196,7 @@ export class SearchService {
           },
         },
         {
-          postTag: {
+          post_tag: {
             some: {
               tag: { tag_name: { contains: query, mode: 'insensitive' } },
             },
@@ -218,7 +218,7 @@ export class SearchService {
             media: true,
             user: true,
             category: true,
-            postTag: { include: { tag: true } },
+            post_tag: { include: { tag: true } },
           },
         })
         .then((posts) => posts.map((post) => this.integratePostContent(post))),
@@ -294,7 +294,7 @@ export class SearchService {
       media: post.media,
       user: post.user,
       category: post.category,
-      postTag: post.postTag,
+      post_tag: post.postTag,
     };
   }
 }

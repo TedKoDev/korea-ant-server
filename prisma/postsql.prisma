@@ -437,7 +437,7 @@ model bet_post {
   created_at    DateTime  @default(now()) @db.Timestamp
   updated_at    DateTime? @db.Timestamp
   deleted_at    DateTime? @db.Timestamp
-  user          users     @relation(fields: [user_id], references: [user_id])
+  user         users      @relation(fields: [user_id], references: [user_id])
   bets          bet[]     // 이 게시글과 연결된 베팅
   bet_comments  bet_comment[] // 베팅 게시글에 달린 댓글
   bet_likes     bet_like[]    // 베팅 게시글의 좋아요

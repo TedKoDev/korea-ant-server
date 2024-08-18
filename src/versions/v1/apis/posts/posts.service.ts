@@ -5,7 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { postType, Prisma } from '@prisma/client';
+import { post_type, Prisma } from '@prisma/client';
 import { MediaService } from '../media';
 import { CreateMediaDto } from '../media/dto';
 import { PointsService } from '../point/points.service';
@@ -37,7 +37,7 @@ export class PostsService {
 
     // 게시글 유형별 데이터 생성
     switch (createPostDto.type) {
-      case postType.GENERAL:
+      case post_type.GENERAL:
         await this.prisma.post_general.create({
           data: {
             post_id: post.post_id,
@@ -46,7 +46,7 @@ export class PostsService {
           },
         });
         break;
-      case postType.COLUMN:
+      case post_type.COLUMN:
         await this.prisma.post_column.create({
           data: {
             post_id: post.post_id,
@@ -55,7 +55,7 @@ export class PostsService {
           },
         });
         break;
-      case postType.QUESTION:
+      case post_type.QUESTION:
         await this.prisma.post_question.create({
           data: {
             post_id: post.post_id,
@@ -190,7 +190,7 @@ export class PostsService {
     }
 
     if (
-      updatePostDto.type === postType.QUESTION &&
+      updatePostDto.type === post_type.QUESTION &&
       updatePostDto.points !== undefined
     ) {
       const user = await this.prisma.users.findUnique({
@@ -235,7 +235,7 @@ export class PostsService {
     // 게시글 업데이트 입력 데이터 생성
     const postUpdateInput: Prisma.postUpdateInput = {
       type: updatePostDto.type
-        ? { set: updatePostDto.type as postType }
+        ? { set: updatePostDto.type as post_type }
         : undefined,
       category: updatePostDto.categoryId
         ? { connect: { category_id: updatePostDto.categoryId } }
@@ -250,7 +250,7 @@ export class PostsService {
 
     // 게시글 유형별 데이터 업데이트
     switch (updatePostDto.type) {
-      case postType.GENERAL:
+      case post_type.GENERAL:
         await this.prisma.post_general.update({
           where: { post_id: id },
           data: {
@@ -259,7 +259,7 @@ export class PostsService {
           },
         });
         break;
-      case postType.COLUMN:
+      case post_type.COLUMN:
         await this.prisma.post_column.update({
           where: { post_id: id },
           data: {
@@ -268,7 +268,7 @@ export class PostsService {
           },
         });
         break;
-      case postType.QUESTION:
+      case post_type.QUESTION:
         await this.prisma.post_question.update({
           where: { post_id: id },
           data: {
@@ -296,7 +296,7 @@ export class PostsService {
     }
 
     // 태그 데이터 업데이트
-    await this.prisma.postTag.deleteMany({ where: { post_id: id } });
+    await this.prisma.post_tag.deleteMany({ where: { post_id: id } });
 
     if (updatePostDto.tags && updatePostDto.tags.length > 0) {
       await this.handleTags(updatedPost.post_id, updatePostDto.tags, false);
@@ -373,7 +373,7 @@ export class PostsService {
         });
       }
 
-      await this.prisma.postTag.create({
+      await this.prisma.post_tag.create({
         data: {
           post_id: postId,
           tag_id: tag.tag_id,

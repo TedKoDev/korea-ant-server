@@ -1,5 +1,5 @@
 // create-ad-banner.dto.ts
-import { AdBannerStatus } from '@prisma/client';
+import { ad_banner_status } from '@prisma/client';
 import {
   IsDate,
   IsEnum,
@@ -39,6 +39,6 @@ export class CreateAdBannerDto {
   image_url: string;
 
   @IsOptional()
-  @IsEnum(AdBannerStatus)
-  status?: AdBannerStatus;
+  @IsEnum(ad_banner_status)
+  status?: ad_banner_status;
 }
