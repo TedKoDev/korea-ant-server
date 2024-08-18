@@ -1,11 +1,11 @@
 services:
   db:
     image: postgres:latest
-    container_name: postgres_local
+    container_name: postgres_ant_local
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: keojak-community
+      POSTGRES_DB: korea-ant
     ports:
       - '5432:5432'
     volumes:

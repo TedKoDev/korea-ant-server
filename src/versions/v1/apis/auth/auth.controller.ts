@@ -19,7 +19,7 @@ import {
   DevLoginDto,
   GetTokenDto,
   GetUserInfoBodyDto,
-  KeojakGetTokenDto,
+  koreaantGetTokenDto,
   LoginUserDto,
   RegisterUserDto,
 } from './dto';
@@ -77,7 +77,7 @@ export class AuthController {
       return res.status(401).send('Invalid credentials');
     }
 
-    const redirectUrl = `${redirect_uri}?code=${result.authCode}&state=${state}&keojak_code=${result.keojakCode}`;
+    const redirectUrl = `${redirect_uri}?code=${result.authCode}&state=${state}&koreaant_code=${result.koreaantCode}`;
     res.redirect(redirectUrl);
   }
 
@@ -97,20 +97,21 @@ export class AuthController {
     return this.authService.getToken(code);
   }
 
-  @Post('keojak-dev-login')
+  @Post('koreaant-dev-login')
   @UseGuards(ApiKeyGuard)
-  async keojakDevLogin(@Body() dto: DevLoginDto) {
+  async koreaantDevLogin(@Body() dto: DevLoginDto) {
     const { email, password } = dto;
-    const { keojakCode } = await this.authService.loginUser(email, password);
-    const { access_token } = await this.authService.getKeojakToken(keojakCode);
+    const { koreaantCode } = await this.authService.loginUser(email, password);
+    const { access_token } =
+      await this.authService.getkoreaantToken(koreaantCode);
 
     return { access_token };
   }
 
-  @Post('keojak-token')
+  @Post('koreaant-token')
   @UseGuards(ApiKeyGuard)
-  async getKeojakToken(@Body() { keojakCode }: KeojakGetTokenDto) {
-    return this.authService.getKeojakToken(keojakCode);
+  async getkoreaantToken(@Body() { koreaantCode }: koreaantGetTokenDto) {
+    return this.authService.getkoreaantToken(koreaantCode);
   }
 
   @Post('user-info-body')

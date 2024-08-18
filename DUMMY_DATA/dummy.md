@@ -2,25 +2,29 @@
 -- category 테이블에 더미 데이터 삽입
 -- sql문 그냥 넣고 돌리면 됨
 
+-- 토픽 삽입
 INSERT INTO public."topic" (title, created_at, updated_at, deleted_at) VALUES
-('Brewing Methods', NOW(), NULL, NULL),
-('Coffee Beans', NOW(), NULL, NULL),
-('Coffee Equipment', NOW(), NULL, NULL),
-('Coffee Culture', NOW(), NULL, NULL),
-('Coffee Recipes', NOW(), NULL, NULL);
+('주식 예측', NOW(), NULL, NULL),
+('상품 예측', NOW(), NULL, NULL),
+('경제 지표 예측', NOW(), NULL, NULL),
+('인간지표 랭킹', NOW(), NULL, NULL),
+('커뮤니티 토론', NOW(), NULL, NULL);
 
+-- 카테고리 삽입
 INSERT INTO public."category" (topic_id, category_name, created_at, updated_at, deleted_at) VALUES
-((SELECT topic_id FROM public."topic" WHERE title = 'Brewing Methods'), 'Espresso', NOW(), NULL, NULL),
-((SELECT topic_id FROM public."topic" WHERE title = 'Brewing Methods'), 'French Press', NOW(), NULL, NULL),
-((SELECT topic_id FROM public."topic" WHERE title = 'Brewing Methods'), 'Pour Over', NOW(), NULL, NULL),
-((SELECT topic_id FROM public."topic" WHERE title = 'Coffee Beans'), 'Arabica', NOW(), NULL, NULL),
-((SELECT topic_id FROM public."topic" WHERE title = 'Coffee Beans'), 'Robusta', NOW(), NULL, NULL),
-((SELECT topic_id FROM public."topic" WHERE title = 'Coffee Equipment'), 'Grinders', NOW(), NULL, NULL),
-((SELECT topic_id FROM public."topic" WHERE title = 'Coffee Equipment'), 'Espresso Machines', NOW(), NULL, NULL),
-((SELECT topic_id FROM public."topic" WHERE title = 'Coffee Culture'), 'History', NOW(), NULL, NULL),
-((SELECT topic_id FROM public."topic" WHERE title = 'Coffee Culture'), 'Trends', NOW(), NULL, NULL),
-((SELECT topic_id FROM public."topic" WHERE title = 'Coffee Recipes'), 'Iced Coffee', NOW(), NULL, NULL),
-((SELECT topic_id FROM public."topic" WHERE title = 'Coffee Recipes'), 'Coffee Cocktails', NOW(), NULL, NULL);
+((SELECT topic_id FROM public."topic" WHERE title = '주식 예측'), '한국 주식', NOW(), NULL, NULL),
+((SELECT topic_id FROM public."topic" WHERE title = '주식 예측'), '미국 주식', NOW(), NULL, NULL),
+((SELECT topic_id FROM public."topic" WHERE title = '주식 예측'), '신흥시장 주식', NOW(), NULL, NULL),
+((SELECT topic_id FROM public."topic" WHERE title = '상품 예측'), '유가', NOW(), NULL, NULL),
+((SELECT topic_id FROM public."topic" WHERE title = '상품 예측'), '금값', NOW(), NULL, NULL),
+((SELECT topic_id FROM public."topic" WHERE title = '상품 예측'), '원자재', NOW(), NULL, NULL),
+((SELECT topic_id FROM public."topic" WHERE title = '경제 지표 예측'), '환율', NOW(), NULL, NULL),
+((SELECT topic_id FROM public."topic" WHERE title = '경제 지표 예측'), '금리', NOW(), NULL, NULL),
+((SELECT topic_id FROM public."topic" WHERE title = '경제 지표 예측'), '인플레이션', NOW(), NULL, NULL),
+((SELECT topic_id FROM public."topic" WHERE title = '인간지표 랭킹'), '상위 예측자', NOW(), NULL, NULL),
+((SELECT topic_id FROM public."topic" WHERE title = '인간지표 랭킹'), '최근 랭킹 변화', NOW(), NULL, NULL),
+((SELECT topic_id FROM public."topic" WHERE title = '커뮤니티 토론'), '자유 토론', NOW(), NULL, NULL),
+((SELECT topic_id FROM public."topic" WHERE title = '커뮤니티 토론'), '피드백 및 제안', NOW(), NULL, NULL);
 
 INSERT INTO levelthreshold (level, min_posts, min_comments, min_likes, min_logins, created_at)
 VALUES

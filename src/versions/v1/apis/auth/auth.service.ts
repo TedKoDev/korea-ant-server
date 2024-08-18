@@ -132,15 +132,15 @@ export class AuthService {
     }
 
     // 새로운 AuthCode 생성
-    const { code, keojak_code } = await this.prisma.authCode.create({
+    const { code, koreaant_code } = await this.prisma.authCode.create({
       data: {
         user_id: user.user_id,
         expired_at: expiredAt,
       },
     });
 
-    // AuthCode와 KeojakCode 반환
-    return { authCode: code, keojakCode: keojak_code };
+    // AuthCode와 koreaantCode 반환
+    return { authCode: code, koreaantCode: koreaant_code };
   }
 
   // 유저레벨 업데이트
@@ -227,9 +227,9 @@ export class AuthService {
   }
 
   // 커작 인증 토큰 발급
-  async getKeojakToken(keojakCode: string) {
+  async getkoreaantToken(koreaantCode: string) {
     const codeInfo = await this.prisma.authCode.findUnique({
-      where: { keojak_code: keojakCode },
+      where: { koreaant_code: koreaantCode },
     });
 
     if (!codeInfo) {

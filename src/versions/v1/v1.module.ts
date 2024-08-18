@@ -5,7 +5,6 @@ import { AdminBlockModule } from './apis/admin-block';
 import { AuthModule } from './apis/auth';
 import { CommentsModule } from './apis/comments';
 import { FollowModule } from './apis/follow';
-import { InquiryModule } from './apis/inquiry';
 import { LevelThresholdModule } from './apis/level';
 import { LikesModule } from './apis/likes';
 import { PointsModule } from './apis/point';
@@ -17,7 +16,6 @@ import { UserBlockModule } from './apis/userblock';
 
 @Module({
   imports: [
-    InquiryModule,
     AuthModule,
     UserModule,
     PostsModule,

@@ -9,9 +9,6 @@ generator client {
   previewFeatures = ["postgresqlExtensions"]
 }
 
-
-
-
 model users {
   user_id             Int              @id @default(autoincrement())
   username            String           @unique @db.VarChar(50)
@@ -27,44 +24,46 @@ model users {
   role                role             @default(USER)
   account_status      accountStatus    @default(ACTIVE)
   sign_up_ip          String?          @db.VarChar(45)
-  login_count         Int              @default(0) // 로그인 횟수 필드 추가
+  login_count         Int              @default(0)
   created_at          DateTime         @default(now()) @db.Timestamp
   last_login_at       DateTime?
   updated_at          DateTime?        @db.Timestamp
   deleted_at          DateTime?        @db.Timestamp
-  social_login        socialLogin[]
+  social_login        social_login[]
   point               point[]
   post                post[]
   comment             comment[]
-  comment_like        commentLike[]
+  comment_like        comment_like[]
   like                like[]
-  admin_action        adminAction[]
-  auth_code           authCode[]
+  admin_action        admin_action[]
+  auth_code           auth_code[]
   following           follow[] @relation("FollowingRelation")
   followers           follow[] @relation("FollowerRelation")
-  reportReported      report[] @relation("ReportedUser")
-  reportReporter      report[] @relation("Reporter")
-  reportResolved      report[] @relation("ResolvedBy")
-  userBlockBlocker    userBlock[] @relation("Blocker")
-  userBlockBlocked    userBlock[] @relation("Blocked")
-  adminBlockAdmin     adminBlock[] @relation("Admin")
-  adminBlockBlocked   adminBlock[] @relation("AdminBlockedUser")
+  report_reported     report[] @relation("ReportedUser")
+  report_reporter     report[] @relation("Reporter")
+  report_resolved     report[] @relation("ResolvedBy")
+  user_block_blocker  user_block[] @relation("Blocker")
+  user_block_blocked  user_block[] @relation("Blocked")
+  admin_block_admin   admin_block[] @relation("Admin")
+  admin_block_blocked admin_block[] @relation("AdminBlockedUser")
+  bet_post            bet_post[]       // 새로운 베팅 게시글과의 관계
+  bet_comment         bet_comment[]    // 새로운 베팅 댓글과의 관계
+  bet_like            bet_like[]       // 새로운 베팅 좋아요와의 관계
+  bet                 bet[]           // 베팅과의 관계
 }
-
 
 model levelthreshold {
   level                Int     @id
   min_posts            Int
   min_comments         Int
   min_likes            Int
-  min_logins           Int     @default(0) // 방문 횟수 기준 필드 추가
+  min_logins           Int     @default(0)
   created_at           DateTime @default(now()) @db.Timestamp
   updated_at           DateTime? @db.Timestamp
   deleted_at           DateTime? @db.Timestamp
 }
 
-
-model AdBanner {
+model ad_banner {
   id                 Int      @id @default(autoincrement())
   position           String
   company_name       String
@@ -73,20 +72,18 @@ model AdBanner {
   start_date         DateTime
   end_date           DateTime
   image_url          String
-  status             AdBannerStatus @default(INACTIVE) // 상태 필드
-  created_at           DateTime @default(now()) @db.Timestamp
-  updated_at           DateTime? @db.Timestamp
-  deleted_at           DateTime? @db.Timestamp
+  status             ad_banner_status @default(INACTIVE)
+  created_at         DateTime @default(now()) @db.Timestamp
+  updated_at         DateTime? @db.Timestamp
+  deleted_at         DateTime? @db.Timestamp
 }
 
-enum AdBannerStatus {
+enum ad_banner_status {
   ACTIVE
   INACTIVE
 }
 
-
-
-model socialLogin {
+model social_login {
   social_login_id  Int        @id @default(autoincrement())
   user_id          Int
   provider         provider
@@ -108,11 +105,11 @@ model follow {
   following        users    @relation("FollowerRelation", fields: [following_id], references: [user_id])
 }
 
-model authCode {
+model auth_code {
   id          Int         @id @default(autoincrement())
   user_id     Int         @unique
   code        String      @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  keojak_code String      @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  koreaant_code String    @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   expired_at  DateTime
   createdAt   DateTime    @default(now())
   user        users       @relation(fields: [user_id], references: [user_id])
@@ -123,6 +120,8 @@ model point {
   user_id       Int
   points_change Int
   change_reason String?   @db.VarChar(255)
+  is_bet        Boolean   @default(false) // 이 포인트 변경이 베팅과 관련 있는지 여부
+  related_bet_id Int?     // 이 포인트 변경이 특정 베팅과 관련이 있는 경우 연결
   change_date   DateTime  @default(now()) @db.Timestamp
   created_at    DateTime  @default(now()) @db.Timestamp
   updated_at    DateTime? @db.Timestamp
@@ -154,7 +153,7 @@ model media {
   media_id    Int       @id @default(autoincrement())
   post_id     Int?
   comment_id  Int?
-  media_type  mediaType
+  media_type  media_type
   media_url   String    @db.VarChar(255)
   created_at  DateTime  @default(now()) @db.Timestamp
   updated_at  DateTime? @db.Timestamp
@@ -169,21 +168,21 @@ model comment {
   user_id          Int
   content          String    @db.Text
   parent_comment_id Int?
-  status           commentStatus @default(PUBLIC)
+  status           comment_status @default(PUBLIC)
   likes            Int        @default(0)
   created_at       DateTime   @default(now()) @db.Timestamp
   updated_at       DateTime?  @db.Timestamp
   deleted_at       DateTime?  @db.Timestamp
-  isSelected       Boolean?   @default(false) // 답변으로 선택 여부
+  isSelected       Boolean?   @default(false)
   post             post       @relation(fields: [post_id], references: [post_id])
   user             users      @relation(fields: [user_id], references: [user_id])
-  parentComment    comment?   @relation("CommentToComment", fields: [parent_comment_id], references: [comment_id])
-  childComments    comment[]  @relation("CommentToComment")
-  commentLike      commentLike[]
-  media            media[]    
+  parent_comment   comment?   @relation("CommentToComment", fields: [parent_comment_id], references: [comment_id])
+  child_comments   comment[]  @relation("CommentToComment")
+  comment_like     comment_like[]
+  media            media[]
 }
 
-model commentLike {
+model comment_like {
   comment_like_id Int       @id @default(autoincrement())
   comment_id      Int
   user_id         Int
@@ -199,8 +198,8 @@ model post {
   post_id      Int       @id @default(autoincrement())
   user_id      Int
   category_id  Int
-  type         postType
-  status       postStatus @default(PUBLIC)
+  type         post_type
+  status       post_status @default(PUBLIC)
   views        Int        @default(0)
   likes        Int        @default(0)
   comments     Int        @default(0)
@@ -212,8 +211,8 @@ model post {
   media        media[]
   comment      comment[]
   like         like[]
-  postTag      postTag[]
-  postView     postView[]
+  post_tag     post_tag[]
+  post_view    post_view[]
   post_general post_general?
   post_column  post_column?
   post_question post_question?
@@ -247,7 +246,7 @@ model post_question {
   title         String    @db.VarChar(255)
   content       String    @db.Text
   points        Int       @default(0)
-  isAnswered    Boolean   @default(false)  // 새로운 필드 추가
+  isAnswered    Boolean   @default(false)
   created_at    DateTime  @default(now()) @db.Timestamp
   updated_at    DateTime? @db.Timestamp
   deleted_at    DateTime? @db.Timestamp
@@ -273,10 +272,10 @@ model tag {
   created_at    DateTime  @default(now()) @db.Timestamp
   updated_at    DateTime? @db.Timestamp
   deleted_at    DateTime? @db.Timestamp
-  postTag       postTag[]
+  post_tag      post_tag[]
 }
 
-model postTag {
+model post_tag {
   post_tag_id  Int       @id @default(autoincrement())
   post_id      Int
   tag_id       Int
@@ -287,7 +286,7 @@ model postTag {
   tag          tag       @relation(fields: [tag_id], references: [tag_id])
 }
 
-model postView {
+model post_view {
   post_view_id  Int       @id @default(autoincrement())
   post_id       Int
   ip_address    String    @db.VarChar(45)
@@ -298,18 +297,18 @@ model postView {
   post          post      @relation(fields: [post_id], references: [post_id])
 }
 
-model adminAction {
+model admin_action {
   action_id       Int       @id @default(autoincrement())
   admin_user_id   Int
-  target_type     targetType
+  target_type     target_type
   target_id       Int
-  action_type     actionType
+  action_type     action_type
   reason          String?   @db.Text
   action_timestamp DateTime @default(now()) @db.Timestamp
   adminUser       users     @relation(fields: [admin_user_id], references: [user_id])
 }
 
-enum reportTargetType {
+enum report_target_type {
   POST
   COMMENT
   USER
@@ -317,14 +316,14 @@ enum reportTargetType {
 
 model report {
   report_id         Int               @id @default(autoincrement())
-  target_type       reportTargetType  // 신고 대상의 유형 (POST, COMMENT, USER)
-  target_id         Int               // 신고 대상의 ID (게시글, 댓글, 사용자)
+  target_type       report_target_type
+  target_id         Int
   reported_user_id  Int
   reported_user     users             @relation("ReportedUser", fields: [reported_user_id], references: [user_id])
   reporter_user_id  Int
   reporter_user     users             @relation("Reporter", fields: [reporter_user_id], references: [user_id])
   reason            String            @db.Text
-  status            reportStatus      @default(PENDING)
+  status            report_status      @default(PENDING)
   created_at        DateTime          @default(now()) @db.Timestamp
   updated_at        DateTime?         @db.Timestamp
   resolved_at       DateTime?         @db.Timestamp
@@ -332,21 +331,17 @@ model report {
   resolved_by       users?            @relation("ResolvedBy", fields: [resolved_by_user_id], references: [user_id])
 }
 
-
-
-model userBlock {
+model user_block {
   block_id   Int       @id @default(autoincrement())
   blocker    users     @relation("Blocker", fields: [blocker_id], references: [user_id])
   blocker_id Int
   blocked    users     @relation("Blocked", fields: [blocked_id], references: [user_id])
   blocked_id Int
   created_at DateTime  @default(now()) @db.Timestamp
-  deleted_at DateTime? @db.Timestamp  // Add this field for toggling block status
+  deleted_at DateTime? @db.Timestamp
 }
 
-
-
-model adminBlock {
+model admin_block {
   admin_block_id Int       @id @default(autoincrement())
   admin          users     @relation("Admin", fields: [admin_id], references: [user_id])
   admin_id       Int
@@ -356,28 +351,26 @@ model adminBlock {
   created_at     DateTime  @default(now()) @db.Timestamp
   unblocked_at   DateTime?
   block_count    Int       @default(1)
-  updated_at     DateTime  @updatedAt @db.Timestamp // Add this line for tracking updates
+  updated_at     DateTime  @updatedAt @db.Timestamp
 }
 
-
-enum reportStatus {
+enum report_status {
   PENDING
   RESOLVED
   REJECTED
 }
-
 
 enum role {
   USER
   ADMIN
 }
 
+
 enum accountStatus {
   ACTIVE
   INACTIVE
   SUSPENDED
 }
-
 enum provider {
   GOOGLE
   FACEBOOK
@@ -386,38 +379,130 @@ enum provider {
   GITHUB
 }
 
-enum postType {
+enum post_type {
   GENERAL
   COLUMN
   QUESTION
 }
 
-enum sortType {
+enum sort_type {
   LATEST
   POPULAR
 }
 
-enum postStatus {
+enum post_status {
   PUBLIC
   DRAFT
   DELETED
 }
 
-enum mediaType {
+enum media_type {
   IMAGE
   VIDEO
 }
 
-enum commentStatus {
+enum comment_status {
   PUBLIC
   DELETED
 }
 
-enum targetType {
+enum target_type {
   POST
   COMMENT
 }
 
-enum actionType {
+enum action_type {
   DELETE
+}
+
+// 새로운 베팅 관련 테이블들
+
+model stock {
+  stock_id    Int       @id @default(autoincrement())
+  name        String    @db.VarChar(100)
+  symbol      String    @unique @db.VarChar(10)
+  description String?   @db.Text
+  created_at  DateTime  @default(now()) @db.Timestamp
+  updated_at  DateTime? @db.Timestamp
+  deleted_at  DateTime? @db.Timestamp
+  bets        bet[]     // 베팅과의 관계 설정
+  market_events market_event[] // 시장 이벤트와의 관계 설정
+}
+
+model bet_post {
+  bet_post_id   Int       @id @default(autoincrement())
+  user_id       Int       // 관리자가 작성
+  title         String    @db.VarChar(255)
+  content       String    @db.Text
+  created_at    DateTime  @default(now()) @db.Timestamp
+  updated_at    DateTime? @db.Timestamp
+  deleted_at    DateTime? @db.Timestamp
+  user          users     @relation(fields: [user_id], references: [user_id])
+  bets          bet[]     // 이 게시글과 연결된 베팅
+  bet_comments  bet_comment[] // 베팅 게시글에 달린 댓글
+  bet_likes     bet_like[]    // 베팅 게시글의 좋아요
+}
+
+model bet {
+  bet_id        Int       @id @default(autoincrement())
+  user_id       Int
+  stock_id      Int
+  bet_post_id   Int       // 베팅을 설명하는 게시글 ID
+  bet_amount    Int       // 사용자가 베팅한 포인트
+  direction     bet_direction // 상승 또는 하락을 나타내는 Enum
+  fixed_odds    Float     // 베팅 시점의 고정된 배당률
+  status        bet_status @default(OPEN) // 베팅 상태 (OPEN, WON, LOST, CANCELLED)
+  created_at    DateTime  @default(now()) @db.Timestamp
+  updated_at    DateTime? @db.Timestamp
+  resolved_at   DateTime? @db.Timestamp
+  user          users     @relation(fields: [user_id], references: [user_id])
+  stock         stock     @relation(fields: [stock_id], references: [stock_id])
+  bet_post      bet_post  @relation(fields: [bet_post_id], references: [bet_post_id]) // bet_post와의 관계
+}
+
+model bet_comment {
+  bet_comment_id Int       @id @default(autoincrement())
+  bet_post_id    Int
+  user_id        Int
+  content        String    @db.Text
+  created_at     DateTime  @default(now()) @db.Timestamp
+  updated_at     DateTime? @db.Timestamp
+  deleted_at     DateTime? @db.Timestamp
+  bet_post       bet_post  @relation(fields: [bet_post_id], references: [bet_post_id])
+  user           users     @relation(fields: [user_id], references: [user_id])
+  bet_likes      bet_like[] // 댓글의 좋아요
+}
+
+model bet_like {
+  bet_like_id  Int       @id @default(autoincrement())
+  bet_post_id  Int?      // 게시글 좋아요일 경우
+  bet_comment_id Int?    // 댓글 좋아요일 경우
+  user_id      Int
+  created_at   DateTime  @default(now()) @db.Timestamp
+  updated_at   DateTime? @db.Timestamp
+  deleted_at   DateTime? @db.Timestamp
+  bet_post     bet_post?  @relation(fields: [bet_post_id], references: [bet_post_id])
+  bet_comment  bet_comment? @relation(fields: [bet_comment_id], references: [bet_comment_id])
+  user         users     @relation(fields: [user_id], references: [user_id])
+}
+
+enum bet_direction {
+  UP
+  DOWN
+}
+
+enum bet_status {
+  OPEN
+  WON
+  LOST
+  CANCELLED
+}
+
+model market_event { // market_event 모델에 저장된 종가를 확인하여 주식이 실제로 상승했는지 판단합니다.
+  event_id     Int       @id @default(autoincrement())
+  stock_id     Int
+  closing_price Float
+  event_date   DateTime  @default(now()) @db.Timestamp
+  resolved_at  DateTime? @db.Timestamp
+  stock        stock     @relation(fields: [stock_id], references: [stock_id])
 }

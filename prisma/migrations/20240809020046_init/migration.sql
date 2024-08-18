@@ -85,7 +85,7 @@ CREATE TABLE "authCode" (
     "id" SERIAL NOT NULL,
     "user_id" INTEGER NOT NULL,
     "code" UUID NOT NULL DEFAULT uuid_generate_v4(),
-    "keojak_code" UUID NOT NULL DEFAULT uuid_generate_v4(),
+    "koreaant_code" UUID NOT NULL DEFAULT uuid_generate_v4(),
     "expired_at" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -304,7 +304,7 @@ CREATE UNIQUE INDEX "authCode_user_id_key" ON "authCode"("user_id");
 CREATE UNIQUE INDEX "authCode_code_key" ON "authCode"("code");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "authCode_keojak_code_key" ON "authCode"("keojak_code");
+CREATE UNIQUE INDEX "authCode_koreaant_code_key" ON "authCode"("koreaant_code");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "post_general_post_id_key" ON "post_general"("post_id");

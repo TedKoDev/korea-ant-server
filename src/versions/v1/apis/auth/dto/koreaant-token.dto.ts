@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class KeojakGetTokenDto {
+export class koreaantGetTokenDto {
   @IsString()
   @IsNotEmpty()
-  keojakCode: string;
+  koreaantCode: string;
 }
